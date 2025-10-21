@@ -20,11 +20,11 @@
             theme: {
                 extend: {
                     colors: {
-                        'brand-dark': '#0a0a0a',      // True dark background
-                        'brand-light': '#e5e5e5',     // Main text
-                        'brand-muted': '#a3a3a3',     // Secondary text
-                        'brand-accent': '#38bdf8',    // Brighter blue blue accent
-                        'brand-text-dark': '#1f2937', // Dark text for light backgrounds
+                        'brand-dark': '#0a0a0a',      // Preto/Fundo Escuro Principal
+                        'brand-light': '#e5e5e5',     // Cinza Claro/Branco (Texto Principal)
+                        'brand-muted': '#a3a3a3',     // Cinza (Texto Secundário)
+                        'brand-accent': '#D4AF37',    // DOURADO ELEGANTE (Acento)
+                        'brand-text-dark': '#1f2937', // Texto Escuro para fundos claros
                     },
                     fontFamily: {
                         sans: ['Roboto', 'sans-serif'],
@@ -118,6 +118,25 @@
             width: 85%; /* Card ocupa 85% para o próximo ficar visível */
             max-width: 320px; /* Limite de largura para desktop */
         }
+        
+        /* Estilos para o iframe do Google Maps */
+        .map-container {
+            width: 100%;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            position: relative;
+            margin-top: 4rem; /* mt-16 */
+            border-radius: 1rem; /* rounded-xl */
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
 <body class="font-sans text-brand-light bg-brand-dark">
@@ -155,6 +174,7 @@
                         const textOpacity = 1 - (scrollPosition / animationDistance);
                         heroTextContent.style.opacity = Math.max(0, textOpacity).toString();
                         
+                        // Mantém a opacidade da máscara preta (ou brand-dark)
                         const maskOpacity = scrollPosition / animationDistance;
                         heroBlueMask.style.opacity = Math.min(1, maskOpacity).toString();
                     } else {
@@ -218,8 +238,9 @@
                 
                 function startDrag(e) {
                     isDragging = true;
+                    // Suporte a mouse e touch
                     startX = e.pageX || e.touches[0].pageX;
-                    startY = e.pageY || e.touches[0].pageY; // Captura Y inicial
+                    startY = e.pageY || e.touches[0].pageY; 
                     carouselContainer.style.cursor = 'grabbing';
                 }
 
@@ -232,16 +253,12 @@
                     const diffX = currentX - startX;
                     const diffY = currentY - startY;
 
-                    dragOffset = diffX; // Continua rastreando o deslocamento horizontal
+                    dragOffset = diffX;
 
-                    // Se a distância horizontal percorrida for maior que a vertical (e maior que o threshold),
-                    // consideramos um arrasto horizontal e bloqueamos o scroll vertical.
+                    // Detecta se o movimento é predominantemente horizontal e se é maior que o threshold.
                     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > SCROLL_THRESHOLD) {
-                        e.preventDefault(); // Bloqueia o scroll vertical
+                        e.preventDefault(); // Bloqueia o scroll vertical da página
                     }
-                    
-                    // Se o movimento for predominantemente vertical, o e.preventDefault não é chamado,
-                    // permitindo que o navegador realize o scroll da página.
                 }
 
                 function endDrag() {
@@ -261,7 +278,7 @@
                 }
 
                 carouselContainer.addEventListener('mousedown', startDrag);
-                // Alterado passive: true para passive: false para permitir o preventDefault condicional no touchmove
+                // Usamos { passive: false } para permitir o preventDefault no touchmove
                 carouselContainer.addEventListener('touchstart', startDrag, { passive: false }); 
                 document.addEventListener('mousemove', onDrag);
                 document.addEventListener('touchmove', onDrag, { passive: false });
@@ -314,7 +331,8 @@
             <h3 class="text-lg md:text-2xl font-sans font-light text-brand-light mb-8 max-w-3xl mx-auto">
                 Uma holding com foco no desenvolvimento do setor Imobiliário e do Turismo no Brasil, impulsionando negócios inovadores e sustentáveis.
             </h3>
-            <a href="#quemsomos" class="inline-block px-10 py-3 bg-transparent text-brand-light text-lg rounded-lg shadow-xl border-2 border-white hover:bg-white hover:text-brand-dark transition-all transform hover:scale-[1.02] font-display uppercase">
+            <!-- O BORDER-2 AGORA É DOURADO, NÃO BRANCO -->
+            <a href="#quemsomos" class="inline-block px-10 py-3 bg-transparent text-brand-light text-lg rounded-lg shadow-xl border-2 border-brand-accent hover:bg-brand-accent hover:text-brand-dark transition-all transform hover:scale-[1.02] font-display uppercase">
                 CONHEÇA A RTSC
             </a>
         </div>
@@ -337,6 +355,7 @@
                     </div>
                     <div class="md:w-1/2 w-full animate-on-scroll" style="transition-delay: 200ms;">
                         <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-light mb-6">Quem Somos</h2>
+                        <!-- ESTE TÍTULO FOI PARA DOURADO -->
                         <h3 class="text-2xl md:text-3xl font-display uppercase font-bold mb-6 text-brand-accent">Nossa Trajetória</h3>
                         <p class="text-md leading-relaxed text-brand-muted">
                             Nossa história começa em 2014 e desde então nunca paramos de buscar boas oportunidades com desenvolvimento sustentável.
@@ -356,6 +375,7 @@
                     <!-- Conteúdo Principal -->
                     <div class="marquee-content px-4 md:px-8">
                         <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
                             <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
                             <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
                         </div>
@@ -364,6 +384,7 @@
                             <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
                         </div>
                         <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
                             <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
                             <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
                         </div>
@@ -371,6 +392,7 @@
                     <!-- Conteúdo Repetido (para o loop infinito) -->
                     <div class="marquee-content px-4 md:px-8" aria-hidden="true">
                         <div class="marquee-item text-center px-4 md:px-8">
+                             <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
                             <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
                             <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
                         </div>
@@ -379,6 +401,7 @@
                             <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
                         </div>
                         <div class="marquee-item text-center px-4 md:px-8">
+                             <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
                             <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
                             <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
                         </div>
@@ -413,22 +436,28 @@
                  <!-- CARROSSEL MOBILE: Visão, Missão e Valores (Visível no mobile, oculto no desktop) -->
                  <div class="md:hidden mobile-scroll-container">
                     <div class="mobile-card-wrapper px-4">
-                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]">
+                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
                             <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                <!-- ÍCONE DOURADO -->
                                 <i data-lucide="target" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
                                 <p class="text-sm text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
                             </div>
                         </div>
-                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 200ms;">
+                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
                             <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="rocket" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
                                 <p class="text-sm text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
                             </div>
                         </div>
-                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 400ms;">
+                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
                             <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="shield-check" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
                                 <p class="text-sm text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
@@ -440,16 +469,19 @@
                  <!-- GRID DESKTOP: Visão, Missão e Valores (Oculto no mobile, visível no desktop) -->
                  <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
+                        <!-- ÍCONE DOURADO -->
                         <i data-lucide="target" class="w-12 h-12 text-brand-accent mb-4"></i>
                         <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
                         <p class="text-base text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
                     </div>
                     <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                        <!-- ÍCONE DOURADO -->
                         <i data-lucide="rocket" class="w-12 h-12 text-brand-accent mb-4"></i>
                         <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
                         <p class="text-base text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
                     </div>
                     <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
+                         <!-- ÍCONE DOURADO -->
                         <i data-lucide="shield-check" class="w-12 h-12 text-brand-accent mb-4"></i>
                         <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
                         <p class="text-base text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
@@ -461,6 +493,7 @@
         <section id="areaatuacao" class="py-24 md:py-32 mb-32">
             <div class="max-w-original mx-auto px-4">
                 <div class="text-center max-w-3xl mx-auto mb-8">
+                    <!-- TÍTULO PRINCIPAL EM DOURADO -->
                     <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-accent mb-8 animate-on-scroll">CONSTRUINDO UM NOVO MERCADO</h2>
                     <p class="text-lg text-brand-muted mb-4 animate-on-scroll" style="transition-delay: 200ms;">Investimos em empresas de segmentos variados e complementares, buscando promover o desenvolvimento do turismo brasileiro para todos.</p>
                     <p class="text-lg text-brand-muted animate-on-scroll" style="transition-delay: 400ms;">As companhias em nosso portfólio atuam em todas as pontas do mercado, conectando pessoas, empresas e sociedade.</p>
@@ -475,6 +508,7 @@
                             <img loading="lazy" src="imagens/Private Equity.jpg" alt="Private Equity" class="absolute inset-0 w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/60"></div>
                             <div class="relative z-10 p-8 h-full flex flex-col">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="banknote" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Private Equity</h3>
                                 <p class="text-sm text-brand-light/90">Estruturas que investem em empreendimentos diversos, desde projetos em construção a operações consolidadas com foco na indústria hoteleira, como hotéis, resorts e parques.</p>
@@ -488,6 +522,7 @@
                              <img loading="lazy" src="imagens/Gestão de investimentos.jpeg" alt="Gestão de investimentos" class="absolute inset-0 w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/60"></div>
                             <div class="relative z-10 p-8 h-full flex flex-col">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="trending-up" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Gestão de Investimentos</h3>
                                 <p class="text-sm text-brand-light/90">Veículos que conectam o setor imobiliário a investidores de todos os portes, incluindo milhares de pessoas físicas que ajudam a financiar o setor por meio de fundos imobiliários.</p>
@@ -501,6 +536,7 @@
                             <img loading="lazy" src="imagens/Securitização e garantias imobiliárias.jpg" alt="Securitização e garantias imobiliárias" class="absolute inset-0 w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/60"></div>
                             <div class="relative z-10 p-8 h-full flex flex-col">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="scan" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Securitização e Garantias Imobiliárias</h3>
                                 <p class="text-sm text-brand-light/90">Empresas que conectam empreendedores a fontes de financiamento imobiliário alternativas, permitindo que projetos se transformem em realidade.</p>
@@ -514,6 +550,7 @@
                              <img loading="lazy" src="imagens/Serviços imobiliários financeiros.jpg" alt="Serviços imobiliários financeiros" class="absolute inset-0 w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/60"></div>
                             <div class="relative z-10 p-8 h-full flex flex-col">
+                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="building-2" class="w-10 h-10 text-brand-accent mb-4"></i>
                                 <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Serviços Imobiliários e Financeiros</h3>
                                 <p class="text-sm text-brand-light/90">Nossa atuação é ampla. O portfólio de empresas investidas inclui muitos outros segmentos atrelados ao universo imobiliário e do turismo.</p>
@@ -532,21 +569,24 @@
                 <div class="md:hidden mobile-scroll-container">
                     <div class="mobile-card-wrapper px-4">
                         <!-- Artigo 1: B3 registra alta expressiva de investidores por CPF -->
-                        <a href="https://www.terra.com.br/noticias/b3-registra-alta-expressiva-de-investidores-por-cpf,d8b11b525430093f78d385f1ea1e88f7vkkwnors.html#:~:text=Uma%20recente%20pesquisa%20publicada%20pela,individuais%20de%20negocia%C3%A7%C3%A3o%20dos%20investidores" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]">
+                        <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
+                        <a href="https://www.terra.com.br/noticias/b3-registra-alta-expressiva-de-investidores-por-cpf,d8b11b525430093f78d385f1ea1e88f7vkkwnors.html#:~:text=Uma%20recente%20pesquisa%20publicada%20pela,individuais%20de%20negocia%C3%A7%C3%A3o%20dos%20investidores" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02]">
                             <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">B3 registra alta expressiva de investidores por CPF</h3>
                             <div class="mt-4">
                                 <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
                             </div>
                         </a>
                         <!-- Artigo 2: Fundos imobiliários são uma boa opção de investimento? -->
-                        <a href="https://valor.globo.com/patrocinado/dino/noticia/2023/06/01/fundos-imobiliarios-sao-uma-boa-opcao-de-investimento.ghtml" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 200ms;">
+                        <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
+                        <a href="https://valor.globo.com/patrocinado/dino/noticia/2023/06/01/fundos-imobiliarios-sao-uma-boa-opcao-de-investimento.ghtml" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02]">
                             <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">Fundos imobiliários são uma boa opção de investimento?</h3>
                             <div class="mt-4">
                                 <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
                             </div>
                         </a>
                         <!-- Artigo 3: Queda da Selic inicia um novo ciclo na economia -->
-                        <a href="https://www.terra.com.br/noticias/queda-da-selic-inicia-um-novo-ciclo-na-economia,3405c90b3bb421738de333f4a574aef0q0i0zwlj.html" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 400ms;">
+                        <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
+                        <a href="https://www.terra.com.br/noticias/queda-da-selic-inicia-um-novo-ciclo-na-economia,3405c90b3bb421738de333f4a574aef0q0i0zwlj.html" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02]">
                             <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">Queda da Selic inicia um novo ciclo na economia</h3>
                             <div class="mt-4">
                                 <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
@@ -558,6 +598,7 @@
                 <!-- GRID DESKTOP: Mídia (Oculto no mobile, visível no desktop) -->
                 <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Artigo 1: B3 registra alta expressiva de investidores por CPF -->
+                    <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
                     <a href="https://www.terra.com.br/noticias/b3-registra-alta-expressiva-de-investidores-por-cpf,d8b11b525430093f78d385f1ea1e88f7vkkwnors.html#:~:text=Uma%20recente%20pesquisa%20publicada%20pela,individuais%20de%20negocia%C3%A7%C3%A3o%20dos%20investidores" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105">
                         <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">B3 registra alta expressiva de investidores por CPF</h3>
                         <div class="mt-4">
@@ -565,6 +606,7 @@
                         </div>
                     </a>
                     <!-- Artigo 2: Fundos imobiliários são uma boa opção de investimento? -->
+                    <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
                     <a href="https://valor.globo.com/patrocinado/dino/noticia/2023/06/01/fundos-imobiliarios-sao-uma-boa-opcao-de-investimento.ghtml" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
                         <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">Fundos imobiliários são uma boa opção de investimento?</h3>
                         <div class="mt-4">
@@ -572,6 +614,7 @@
                         </div>
                     </a>
                     <!-- Artigo 3: Queda da Selic inicia um novo ciclo na economia -->
+                    <!-- O SPAN DE 'Leia mais' FOI PARA DOURADO -->
                     <a href="https://www.terra.com.br/noticias/queda-da-selic-inicia-um-novo-ciclo-na-economia,3405c90b3bb421738de333f4a574aef0q0i0zwlj.html" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
                         <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">Queda da Selic inicia um novo ciclo na economia</h3>
                         <div class="mt-4">
@@ -588,28 +631,41 @@
                 <div class="max-w-3xl mx-auto">
                     <!-- CONTATO MOBILE/DESKTOP: layout específico -->
                     <!-- No mobile (sem prefixo), usamos 2 colunas para os 3 itens, com o último (Localização) abrangendo 2 colunas. No desktop (md:), voltamos para 3 colunas iguais. -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 text-left mb-16">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 text-left">
                         <!-- E-mail: Fica na Coluna 1 do mobile, Coluna 1 do desktop -->
                         <div class="bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
+                            <!-- ÍCONE DOURADO -->
                             <i data-lucide="mail" class="w-6 h-6 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
                             <h4 class="text-xs md:text-lg font-bold text-brand-light mb-1">E-mail</h4>
                             <p class="text-[10px] md:text-sm text-brand-muted truncate">contato@rtsc.com.br</p>
                         </div>
                         <!-- Telefone: Fica na Coluna 2 do mobile, Coluna 2 do desktop -->
                         <div class="bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                            <!-- ÍCONE DOURADO -->
                             <i data-lucide="phone" class="w-6 h-6 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
                             <h4 class="text-xs md:text-lg font-bold text-brand-light mb-1">Telefone</h4>
                             <p class="text-[10px] md:text-sm text-brand-muted">+55 (11) 3578-8007</p>
                         </div>
                         <!-- Localização: Ocupa 2 colunas no mobile (span-2), e volta a ser 1 coluna no desktop (md:col-span-1) -->
                         <div class="col-span-2 md:col-span-1 bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
-                            <!-- Ícone maior no mobile para dar mais destaque -->
+                            <!-- ÍCONE DOURADO -->
                             <i data-lucide="map-pin" class="w-8 h-8 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
                             <h4 class="text-sm md:text-lg font-bold text-brand-light mb-1">Localização</h4>
                             <!-- Texto maior para Localização no mobile, e não truncado -->
                             <p class="text-xs md:text-sm text-brand-muted">Rua Estados Unidos, 406, Jardins, São Paulo, SP, Brasil, 01427-000</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- NOVO: Mapa Interativo do Google Maps (Localização: Rua Estados Unidos, 406, São Paulo) -->
+                <div class="map-container animate-on-scroll" style="transition-delay: 600ms;">
+                     <iframe 
+                        title="Localização da RTSC"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.485108603681!2d-46.66699198444658!3d-23.55106806745265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c118c7c9e9%3A0xc6c4f52e5d9c15e8!2sRua%20Estados%20Unidos%2C%20406%20-%20Jardim%20America%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2001427-000!5e0!3m2!1spt-BR!2sbr!4v1689035200000!5m2!1spt-BR!2sbr" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </section>
