@@ -171,7 +171,9 @@
                 let currentIndex = 0;
                 let isDragging = false;
                 let startX = 0;
+                let startY = 0; // Adicionado: posição Y inicial
                 let dragOffset = 0;
+                const SCROLL_THRESHOLD = 10; // Mínimo de pixels para detectar movimento
 
                 function updateCarousel() {
                     const numCards = cards.length;
@@ -217,14 +219,29 @@
                 function startDrag(e) {
                     isDragging = true;
                     startX = e.pageX || e.touches[0].pageX;
+                    startY = e.pageY || e.touches[0].pageY; // Captura Y inicial
                     carouselContainer.style.cursor = 'grabbing';
                 }
 
                 function onDrag(e) {
                     if (!isDragging) return;
-                    e.preventDefault();
+                    
                     const currentX = e.pageX || e.touches[0].pageX;
-                    dragOffset = currentX - startX;
+                    const currentY = e.pageY || e.touches[0].pageY;
+                    
+                    const diffX = currentX - startX;
+                    const diffY = currentY - startY;
+
+                    dragOffset = diffX; // Continua rastreando o deslocamento horizontal
+
+                    // Se a distância horizontal percorrida for maior que a vertical (e maior que o threshold),
+                    // consideramos um arrasto horizontal e bloqueamos o scroll vertical.
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > SCROLL_THRESHOLD) {
+                        e.preventDefault(); // Bloqueia o scroll vertical
+                    }
+                    
+                    // Se o movimento for predominantemente vertical, o e.preventDefault não é chamado,
+                    // permitindo que o navegador realize o scroll da página.
                 }
 
                 function endDrag() {
@@ -234,10 +251,8 @@
 
                     const threshold = 100;
                     if (dragOffset > threshold) {
-                        // Deslize para a direita (move o carrossel para a esquerda)
                         currentIndex = (currentIndex - 1 + cards.length) % cards.length;
                     } else if (dragOffset < -threshold) {
-                        // Deslize para a esquerda (move o carrossel para a direita)
                         currentIndex = (currentIndex + 1) % cards.length;
                     }
                     
@@ -245,9 +260,9 @@
                     updateCarousel();
                 }
 
-                // Eventos de Mouse e Touch
                 carouselContainer.addEventListener('mousedown', startDrag);
-                carouselContainer.addEventListener('touchstart', startDrag, { passive: true });
+                // Alterado passive: true para passive: false para permitir o preventDefault condicional no touchmove
+                carouselContainer.addEventListener('touchstart', startDrag, { passive: false }); 
                 document.addEventListener('mousemove', onDrag);
                 document.addEventListener('touchmove', onDrag, { passive: false });
                 document.addEventListener('mouseup', endDrag);
@@ -443,7 +458,7 @@
             </div>
         </section>
     
-        <section id="areaatuacao" class="py-24 md:py-32">
+        <section id="areaatuacao" class="py-24 md:py-32 mb-32">
             <div class="max-w-original mx-auto px-4">
                 <div class="text-center max-w-3xl mx-auto mb-8">
                     <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-accent mb-8 animate-on-scroll">CONSTRUINDO UM NOVO MERCADO</h2>
@@ -452,7 +467,7 @@
                 </div>
                 
                 <!-- Carrossel 3D de Áreas de Atuação (Ajuste de altura para mobile: h-[350px] em telas pequenas) -->
-                <div id="carousel-3d-container" class="relative h-[350px] md:h-[450px] cursor-grab select-none" style="perspective: 1440px;">
+                <div id="carousel-3d-container" class="relative h-[350px] md:h-[450px] cursor-grab select-none z-10" style="perspective: 1440px;">
                     <!-- Card 1: Private Equity -->
                     <div class="carousel-card absolute left-1/2 top-1/2 w-[calc(100%-80px)] max-w-lg h-[320px] md:h-[400px]" style="transform-style: preserve-3d;">
                         <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
