@@ -80,20 +80,32 @@
             -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
             mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
         }
+        
+        /* CORREÇÃO APLICADA AQUI: Define o layout flexível para todas as telas, mas ajusta a largura total para o desktop. */
         .marquee-wrapper {
             display: flex;
-            /* CRÍTICO PARA O LOOP: O wrapper deve ser largo o suficiente para caber o conteúdo original + a cópia */
-            width: fit-content; /* MODIFICADO: De volta a fit-content, a animação vai para -50% */
-            will-change: transform; /* Otimização de performance para a animação */
-            animation: marquee 30s linear infinite; /* Garante que a animação está aplicada */
+            width: fit-content; /* Valor padrão para que o flex-shrink-0 funcione no mobile */
+            will-change: transform; 
+            animation: marquee 30s linear infinite;
         }
+
+        /* Regra para Desktop: Força a largura para 200% para o loop funcionar corretamente no desktop */
+        @media (min-width: 768px) { /* Ponto de quebra md: */
+            .marquee-wrapper {
+                width: 200%;
+            }
+            .marquee-content {
+                width: 50%; /* Garante que o conteúdo ocupe metade (100% do viewport) */
+            }
+        }
+
         .marquee-content {
             display: flex;
             flex-shrink: 0;
-            /* Removemos o width: 50% daqui, pois a largura é definida pelo fit-content e o flex-shrink-0 */
-            padding: 1rem 0; /* Padding vertical mantido */
-            /* Garante que a largura de todo o bloco original seja considerada. */
+            /* No mobile, a largura é fit-content. No desktop, é 50% */
+            padding: 1rem 0;
         }
+        
         /* NOVO ESTILO: Garante que o item ocupe o espaço necessário e use o padding para espaçamento */
         .marquee-item {
             flex-shrink: 0;
@@ -299,10 +311,10 @@
                 'area_p1': 'Invertimos en empresas de segmentos variados y complementarios, buscando promover el desarrollo del turismo brasileño para todos.',
                 'area_p2': 'Las compañías de nuestro portafolio operan en todos los extremos del mercado, conectando personas, empresas y sociedad.',
                 'card_pe_title': 'Private Equity',
-                'card_pe_text': 'Estructuras que invierten en diversos emprendimientos, desde proyectos en construcción hasta operaciones consolidadas con foco en la industria hotelera, como hoteles, resorts y parques.',
-                'card_gi_title': 'Gestión de Inversiones',
+                'card_pe_text': 'Estructuras que invierten en diversos emprendimientos, desde proyectos en construcción hasta operaciones consolidadas con foco en la industria hoteleira, como hoteles, resorts y parques.',
+                'card_gi_title': 'Gestão de Inversiones',
                 'card_gi_text': 'Vehículos que conectan el sector inmobiliario con inversores de todos los tamaños, incluyendo miles de personas físicas que ayudan a financiar el sector a través de fondos inmobiliarios.',
-                'card_sg_title': 'Securitización y Garantías Inmobiliarias',
+                'card_sg_title': 'Securitização y Garantías Inmobiliarias',
                 'card_sg_text': 'Empresas que conectan a emprendedores con fuentes de financiación inmobiliaria alternativas, permitiendo que los proyectos se conviertan en realidad.',
                 'card_si_title': 'Servicios Imobiliarios y Financieros',
                 'card_si_text': 'Nuestra actuación es amplia. El portafolio de empresas invertidas incluye muchos otros segmentos ligados al universo inmobiliario y turístico.',
@@ -375,7 +387,7 @@
                 'lang_pt': '葡萄牙语',
                 'lang_en': '英语',
                 'lang_es': 'Español',
-                'lang_zh': '普通话',
+                'lang_zh': 'Mandarim',
                 'lang_selector_title': '选择语言'
             }
         };
