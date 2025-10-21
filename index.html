@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTSC Institucional - Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Carrega o Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons para interface moderna -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Configuração de fontes, cores e animações do Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-dark': '#0a0a0a',      // True dark background
+                        'brand-light': '#e5e5e5',     // Main text
+                        'brand-muted': '#a3a3a3',     // Secondary text
+                        'brand-accent': '#38bdf8',    // Brighter blue accent
+                        'brand-text-dark': '#1f2937', // Dark text for light backgrounds
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'slide-in': {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'fade-in': {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        'marquee': {
+                            'from': { transform: 'translateX(0)' },
+                            'to': { transform: 'translateX(-50%)' },
+                        }
+                    },
+                    animation: {
+                        'slide-in': 'slide-in 0.8s ease-out forwards',
+                        'fade-in': 'fade-in 1s ease-out forwards',
+                        'marquee': 'marquee 30s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos base e de reset */
+        html { scroll-behavior: smooth; }
+        .max-w-original { max-width: 1024px; } 
+
+        /* Estilo para animação de rolagem: invisível por padrão */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilos do Carrossel de Números */
+        .marquee-container {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            /* Máscara para suavizar as bordas do carrossel */
+            -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+        }
+        .marquee-wrapper {
+            display: flex;
+            width: fit-content;
+            will-change: transform; /* Otimização de performance para a animação */
+        }
+        .marquee-content {
+            display: flex;
+            flex-shrink: 0;
+            padding: 1rem 0;
+        }
+        .marquee-item {
+            width: auto; 
+            flex-shrink: 0;
+        }
+
+        /* Estilo do Carrossel 3D */
+        .carousel-card {
+            transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease;
+        }
+        
+        /* Estilos para carrosséis de rolagem horizontal (mobile) */
+        .mobile-scroll-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .mobile-scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .mobile-card-wrapper {
+            display: flex;
+            gap: 1.5rem; /* gap-6 */
+            padding-bottom: 0.5rem; /* Padding para evitar corte na sombra */
+        }
+        .mobile-card {
+            flex-shrink: 0;
+            width: 85%; /* Card ocupa 85% para o próximo ficar visível */
+            max-width: 320px; /* Limite de largura para desktop */
+        }
+    </style>
+</head>
+<body class="font-sans text-brand-light bg-brand-dark">
+    
+    <!-- JavaScript para Animação de Rolagem e Carrossel 3D (Lógica do Menu Mobile removida) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animação de Rolagem (Slide-in)
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+            });
+
+            elements.forEach(el => {
+                observer.observe(el);
+            });
+
+            // Animações do Hero ao Rolar
+            const heroTextContent = document.getElementById('hero-text-content');
+            const heroBlueMask = document.getElementById('hero-blue-mask');
+            
+            if (heroTextContent && heroBlueMask) {
+                window.addEventListener('scroll', () => {
+                    const scrollPosition = window.scrollY;
+                    const animationDistance = 500;
+
+                    if (scrollPosition < animationDistance) {
+                        const textOpacity = 1 - (scrollPosition / animationDistance);
+                        heroTextContent.style.opacity = Math.max(0, textOpacity).toString();
+                        
+                        const maskOpacity = scrollPosition / animationDistance;
+                        heroBlueMask.style.opacity = Math.min(1, maskOpacity).toString();
+                    } else {
+                        heroTextContent.style.opacity = '0';
+                        heroBlueMask.style.opacity = '1';
+                    }
+                });
+            }
+
+            // Lógica do Carrossel 3D
+            const carouselContainer = document.getElementById('carousel-3d-container');
+            if (carouselContainer) {
+                const cards = Array.from(carouselContainer.querySelectorAll('.carousel-card'));
+                let currentIndex = 0;
+                let isDragging = false;
+                let startX = 0;
+                let dragOffset = 0;
+
+                function updateCarousel() {
+                    const numCards = cards.length;
+                    cards.forEach((card, index) => {
+                        let offset = index - currentIndex;
+
+                        // Calcula o offset para criar o efeito circular
+                        if (Math.abs(offset) > numCards / 2) {
+                            offset = offset > 0 ? offset - numCards : offset + numCards;
+                        }
+
+                        let transform = '';
+                        let zIndex = 20 - Math.abs(offset);
+                        let opacity = '1';
+
+                        if (offset === 0) {
+                            // Card central (ativo)
+                            transform = `translateX(-50%) scale(1) rotateY(0deg)`;
+                            zIndex = 30;
+                        } else if (offset === 1) {
+                            // Card à direita
+                            transform = `translateX(-10%) scale(0.85) rotateY(-30deg)`;
+                        } else if (offset === -1) {
+                            // Card à esquerda
+                            transform = `translateX(-90%) scale(0.85) rotateY(30deg)`;
+                        } else { 
+                            // Cards muito distantes (fora de vista)
+                            if(offset > 1) {
+                                transform = `translateX(50%) scale(0.7) rotateY(-30deg)`;
+                            } else {
+                                transform = `translateX(-150%) scale(0.7) rotateY(30deg)`;
+                            }
+                            opacity = '0';
+                            zIndex = 10;
+                        }
+                        
+                        card.style.transform = transform;
+                        card.style.zIndex = zIndex;
+                        card.style.opacity = opacity;
+                    });
+                }
+                
+                function startDrag(e) {
+                    isDragging = true;
+                    startX = e.pageX || e.touches[0].pageX;
+                    carouselContainer.style.cursor = 'grabbing';
+                }
+
+                function onDrag(e) {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const currentX = e.pageX || e.touches[0].pageX;
+                    dragOffset = currentX - startX;
+                }
+
+                function endDrag() {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    carouselContainer.style.cursor = 'grab';
+
+                    const threshold = 100;
+                    if (dragOffset > threshold) {
+                        // Deslize para a direita (move o carrossel para a esquerda)
+                        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                    } else if (dragOffset < -threshold) {
+                        // Deslize para a esquerda (move o carrossel para a direita)
+                        currentIndex = (currentIndex + 1) % cards.length;
+                    }
+                    
+                    dragOffset = 0;
+                    updateCarousel();
+                }
+
+                // Eventos de Mouse e Touch
+                carouselContainer.addEventListener('mousedown', startDrag);
+                carouselContainer.addEventListener('touchstart', startDrag, { passive: true });
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('touchmove', onDrag, { passive: false });
+                document.addEventListener('mouseup', endDrag);
+                document.addEventListener('touchend', endDrag);
+                
+                // Inicializa o carrossel
+                updateCarousel();
+            }
+        });
+    </script>
+
+    <!-- Menu Mobile (Off-Canvas) REMOVIDO -->
+
+    <!-- Hero Section com Vídeo de Fundo -->
+    <section class="h-screen flex items-center justify-center sticky top-0">
+        <header class="absolute top-0 w-full z-40 transition-all duration-300 ease-in-out">
+            <!-- Melhoria mobile: py-2 e flex-wrap -->
+            <div class="max-w-original mx-auto px-4 py-2 flex flex-wrap justify-between items-center gap-x-3 gap-y-2 md:py-4 md:gap-x-6">
+                <a href="#" class="flex-shrink-0 w-auto h-auto max-w-[94px]">
+                    <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1693434942/$bkb704gpvtg" alt="Logo RTSC" class="w-full h-auto" style="filter: brightness(0) invert(1);">
+                </a>
+                <!-- Navegação que é exibida em todas as telas (Ajustado para text-xs e space-x-2 no mobile) -->
+                <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base">
+                    <a href="#quemsomos" class="text-brand-light font-medium hover:text-brand-accent transition-colors">Quem somos</a>
+                    <a href="#areaatuacao" class="text-brand-light font-medium hover:text-brand-accent transition-colors">Área de atuação</a>
+                    <a href="#midia" class="text-brand-light font-medium hover:text-brand-accent transition-colors">Na Mídia</a>
+                    <a href="#contato" class="text-brand-light font-medium hover:text-brand-accent transition-colors">Contato</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Vídeo de Fundo (Adicionado preload="auto" para performance) -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+            <video autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover transform scale-150">
+                <!-- !!! LEMBRETE: CORRIGIR CAMINHO DOS VÍDEOS PARA O GITHUB (EX: videos/Predio frente e reverso (2).mp4) !!! -->
+                <source src="Predio frente e reverso (2).mp4" type="video/mp4">
+                Seu navegador não suporta o elemento de vídeo.
+            </video>
+        </div>
+        <div class="absolute inset-0 bg-black opacity-40 z-1"></div>
+        <div id="hero-blue-mask" class="absolute inset-0 bg-brand-dark z-15" style="opacity: 0;"></div>
+
+        <div id="hero-text-content" class="max-w-original mx-auto px-4 text-center relative z-10">
+            <!-- Título ajustado para text-3xl no mobile -->
+            <h1 class="text-3xl md:text-6xl font-display uppercase font-bold text-brand-light mb-4 md:mb-8 leading-tight tracking-tight">
+                Somos o futuro do Imobiliário e do Turismo no Brasil
+            </h1>
+            <!-- Tagline ajustada para text-lg no mobile -->
+            <h3 class="text-lg md:text-2xl font-sans font-light text-brand-light mb-8 max-w-3xl mx-auto">
+                Uma holding com foco no desenvolvimento do setor Imobiliário e do Turismo no Brasil, impulsionando negócios inovadores e sustentáveis.
+            </h3>
+            <a href="#quemsomos" class="inline-block px-10 py-3 bg-transparent text-brand-light text-lg rounded-lg shadow-xl border-2 border-white hover:bg-white hover:text-brand-dark transition-all transform hover:scale-[1.02] font-display uppercase">
+                CONHEÇA A RTSC
+            </a>
+        </div>
+    </section>
+
+    <!-- Wrapper de Conteúdo Principal -->
+    <main class="relative z-20 bg-brand-dark overflow-hidden">
+        <section id="quemsomos" class="py-24 md:py-32">
+            <div class="max-w-original mx-auto px-4">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 w-full animate-on-scroll">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl" style="aspect-ratio: 16/9;">
+                             <!-- Vídeo de Conteúdo (Adicionado loading="lazy" para performance) -->
+                             <video autoplay loop muted playsinline loading="lazy" class="absolute top-0 left-0 w-full h-full object-cover">
+                                 <!-- !!! LEMBRETE: CORRIGIR CAMINHO DOS VÍDEOS PARA O GITHUB (EX: videos/Escritorio frente e reverso (2).mp4) !!! -->
+                                <source src="Escritorio frente e reverso (2).mp4" type="video/mp4">
+                                Seu navegador não suporta o elemento de vídeo.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 w-full animate-on-scroll" style="transition-delay: 200ms;">
+                        <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-light mb-6">Quem Somos</h2>
+                        <h3 class="text-2xl md:text-3xl font-display uppercase font-bold mb-6 text-brand-accent">Nossa Trajetória</h3>
+                        <p class="text-md leading-relaxed text-brand-muted">
+                            Nossa história começa em 2014 e desde então nunca paramos de buscar boas oportunidades com desenvolvimento sustentável.
+                        </p>
+                        <p class="text-md leading-relaxed text-brand-muted mt-4">
+                            Promovemos impacto real na economia em todas as regiões do Brasil, gerando negócios inovadores e abrindo novas oportunidades de investimento.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-12 md:py-32">
+            <!-- Carrossel de números que se move em loop (Ajuste de fonte para Mobile: text-7xl -> text-5xl) -->
+            <div class="marquee-container">
+                <div class="marquee-wrapper animate-marquee">
+                    <!-- Conteúdo Principal -->
+                    <div class="marquee-content px-4 md:px-8">
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
+                        </div>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+1.000</h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
+                        </div>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
+                        </div>
+                    </div>
+                    <!-- Conteúdo Repetido (para o loop infinito) -->
+                    <div class="marquee-content px-4 md:px-8" aria-hidden="true">
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
+                        </div>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+1.000</h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
+                        </div>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 md:py-32">
+            <div class="max-w-original mx-auto px-4 text-center">
+                <div class="max-w-3xl mx-auto animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-light mb-6">Sobre a RTSC</h2>
+                    <p class="text-lg text-brand-muted mb-4">Uma holding que reúne empresas atuantes em diversas áreas, com foco no turismo.</p>
+                    <p class="text-lg text-brand-muted mb-4">Um grupo empreendedor pioneiro, desbravador, versátil, sempre em busca dos melhores resultados.</p>
+                    <p class="text-lg text-brand-muted mb-4">Um hub de inovação, com vocação para acelerar negócios arrojados e transformadores.</p>
+                    <p class="text-lg text-brand-muted">Uma gestora de novos negócios, com foco na transparência e na segurança.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="grupo" class="py-24 md:py-32">
+            <div class="max-w-original mx-auto px-4 text-center">
+                <!-- Imagem do grupo (Adicionado loading="lazy" para performance) -->
+                <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1755024654/$12dzbxovlfv" alt="Logos das Empresas do Grupo" class="max-w-[528px] w-full h-auto mx-auto animate-on-scroll">
+            </div>
+        </section>
+        
+        <section id="sobre" class="relative py-24 md:py-32 bg-white text-brand-text-dark">
+            <div class="max-w-original mx-auto px-4">
+                 <h3 class="text-3xl font-display uppercase font-bold text-center text-brand-text-dark mb-16 animate-on-scroll">Visão, Missão e Valores</h3>
+                 
+                 <!-- CARROSSEL MOBILE: Visão, Missão e Valores (Visível no mobile, oculto no desktop) -->
+                 <div class="md:hidden mobile-scroll-container">
+                    <div class="mobile-card-wrapper px-4">
+                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]">
+                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                <i data-lucide="target" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
+                                <p class="text-sm text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
+                            </div>
+                        </div>
+                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 200ms;">
+                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                <i data-lucide="rocket" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
+                                <p class="text-sm text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
+                            </div>
+                        </div>
+                        <div class="mobile-card animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 400ms;">
+                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                                <i data-lucide="shield-check" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
+                                <p class="text-sm text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                 
+                 <!-- GRID DESKTOP: Visão, Missão e Valores (Oculto no mobile, visível no desktop) -->
+                 <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
+                        <i data-lucide="target" class="w-12 h-12 text-brand-accent mb-4"></i>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
+                        <p class="text-base text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
+                    </div>
+                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                        <i data-lucide="rocket" class="w-12 h-12 text-brand-accent mb-4"></i>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
+                        <p class="text-base text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
+                    </div>
+                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
+                        <i data-lucide="shield-check" class="w-12 h-12 text-brand-accent mb-4"></i>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
+                        <p class="text-base text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <section id="areaatuacao" class="py-24 md:py-32">
+            <div class="max-w-original mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto mb-8">
+                    <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-accent mb-8 animate-on-scroll">CONSTRUINDO UM NOVO MERCADO</h2>
+                    <p class="text-lg text-brand-muted mb-4 animate-on-scroll" style="transition-delay: 200ms;">Investimos em empresas de segmentos variados e complementares, buscando promover o desenvolvimento do turismo brasileiro para todos.</p>
+                    <p class="text-lg text-brand-muted animate-on-scroll" style="transition-delay: 400ms;">As companhias em nosso portfólio atuam em todas as pontas do mercado, conectando pessoas, empresas e sociedade.</p>
+                </div>
+                
+                <!-- Carrossel 3D de Áreas de Atuação (Ajuste de altura para mobile: h-[350px] em telas pequenas) -->
+                <div id="carousel-3d-container" class="relative h-[350px] md:h-[450px] cursor-grab select-none" style="perspective: 1440px;">
+                    <!-- Card 1: Private Equity -->
+                    <div class="carousel-card absolute left-1/2 top-1/2 w-[calc(100%-80px)] max-w-lg h-[320px] md:h-[400px]" style="transform-style: preserve-3d;">
+                        <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+                            <!-- Adicionado loading="lazy" para performance -->
+                            <img loading="lazy" src="https://placehold.co/600x400/0a0a0a/e5e5e5?text=Private+Equity" alt="Private Equity" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60"></div>
+                            <div class="relative z-10 p-8 h-full flex flex-col">
+                                <i data-lucide="banknote" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Private Equity</h3>
+                                <p class="text-sm text-brand-light/90">Estruturas que investem em empreendimentos diversos, desde projetos em construção a operações consolidadas com foco na indústria hoteleira, como hotéis, resorts e parques.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2: Gestão de Investimentos -->
+                    <div class="carousel-card absolute left-1/2 top-1/2 w-[calc(100%-80px)] max-w-lg h-[320px] md:h-[400px]" style="transform-style: preserve-3d;">
+                        <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+                             <!-- Adicionado loading="lazy" para performance -->
+                             <img loading="lazy" src="https://placehold.co/600x400/0a0a0a/e5e5e5?text=Gestão" alt="Gestão de investimentos" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60"></div>
+                            <div class="relative z-10 p-8 h-full flex flex-col">
+                                <i data-lucide="trending-up" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Gestão de Investimentos</h3>
+                                <p class="text-sm text-brand-light/90">Veículos que conectam o setor imobiliário a investidores de todos os portes, incluindo milhares de pessoas físicas que ajudam a financiar o setor por meio de fundos imobiliários.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3: Securitização -->
+                    <div class="carousel-card absolute left-1/2 top-1/2 w-[calc(100%-80px)] max-w-lg h-[320px] md:h-[400px]" style="transform-style: preserve-3d;">
+                        <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+                            <!-- Adicionado loading="lazy" para performance -->
+                            <img loading="lazy" src="https://placehold.co/600x400/0a0a0a/e5e5e5?text=Securitização" alt="Securitização e garantias imobiliárias" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60"></div>
+                            <div class="relative z-10 p-8 h-full flex flex-col">
+                                <i data-lucide="scan" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Securitização e Garantias Imobiliárias</h3>
+                                <p class="text-sm text-brand-light/90">Empresas que conectam empreendedores a fontes de financiamento imobiliário alternativas, permitindo que projetos se transformem em realidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 4: Serviços -->
+                     <div class="carousel-card absolute left-1/2 top-1/2 w-[calc(100%-80px)] max-w-lg h-[320px] md:h-[400px]" style="transform-style: preserve-3d;">
+                        <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+                             <!-- Adicionado loading="lazy" para performance -->
+                             <img loading="lazy" src="https://placehold.co/600x400/0a0a0a/e5e5e5?text=Serviços" alt="Serviços imobiliários financeiros" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60"></div>
+                            <div class="relative z-10 p-8 h-full flex flex-col">
+                                <i data-lucide="building-2" class="w-10 h-10 text-brand-accent mb-4"></i>
+                                <h3 class="text-2xl font-display uppercase font-bold text-brand-light mb-2">Serviços Imobiliários e Financeiros</h3>
+                                <p class="text-sm text-brand-light/90">Nossa atuação é ampla. O portfólio de empresas investidas inclui muitos outros segmentos atrelados ao universo imobiliário e do turismo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="midia" class="py-24 md:py-32 bg-white text-brand-text-dark">
+            <div class="max-w-original mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-text-dark text-center mb-16 animate-on-scroll">NOSSA PRESENÇA NA MÍDIA</h2>
+                
+                <!-- CARROSSEL MOBILE: Mídia (Visível no mobile, oculto no desktop) -->
+                <div class="md:hidden mobile-scroll-container">
+                    <div class="mobile-card-wrapper px-4">
+                        <!-- Artigo 1: B3 registra alta expressiva de investidores por CPF -->
+                        <a href="https://www.terra.com.br/noticias/b3-registra-alta-expressiva-de-investidores-por-cpf,d8b11b525430093f78d385f1ea1e88f7vkkwnors.html#:~:text=Uma%20recente%20pesquisa%20publicada%20pela,individuais%20de%20negocia%C3%A7%C3%A3o%20dos%20investidores" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]">
+                            <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">B3 registra alta expressiva de investidores por CPF</h3>
+                            <div class="mt-4">
+                                <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                            </div>
+                        </a>
+                        <!-- Artigo 2: Fundos imobiliários são uma boa opção de investimento? -->
+                        <a href="https://valor.globo.com/patrocinado/dino/noticia/2023/06/01/fundos-imobiliarios-sao-uma-boa-opcao-de-investimento.ghtml" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 200ms;">
+                            <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">Fundos imobiliários são uma boa opção de investimento?</h3>
+                            <div class="mt-4">
+                                <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                            </div>
+                        </a>
+                        <!-- Artigo 3: Queda da Selic inicia um novo ciclo na economia -->
+                        <a href="https://www.terra.com.br/noticias/queda-da-selic-inicia-um-novo-ciclo-na-economia,3405c90b3bb421738de333f4a574aef0q0i0zwlj.html" target="_blank" class="mobile-card group block bg-gray-100 p-6 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-[1.02]" style="transition-delay: 400ms;">
+                            <h3 class="text-lg font-bold mb-4 leading-snug text-brand-text-dark">Queda da Selic inicia um novo ciclo na economia</h3>
+                            <div class="mt-4">
+                                <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- GRID DESKTOP: Mídia (Oculto no mobile, visível no desktop) -->
+                <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Artigo 1: B3 registra alta expressiva de investidores por CPF -->
+                    <a href="https://www.terra.com.br/noticias/b3-registra-alta-expressiva-de-investidores-por-cpf,d8b11b525430093f78d385f1ea1e88f7vkkwnors.html#:~:text=Uma%20recente%20pesquisa%20publicada%20pela,individuais%20de%20negocia%C3%A7%C3%A3o%20dos%20investidores" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105">
+                        <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">B3 registra alta expressiva de investidores por CPF</h3>
+                        <div class="mt-4">
+                            <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                        </div>
+                    </a>
+                    <!-- Artigo 2: Fundos imobiliários são uma boa opção de investimento? -->
+                    <a href="https://valor.globo.com/patrocinado/dino/noticia/2023/06/01/fundos-imobiliarios-sao-uma-boa-opcao-de-investimento.ghtml" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                        <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">Fundos imobiliários são uma boa opção de investimento?</h3>
+                        <div class="mt-4">
+                            <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                        </div>
+                    </a>
+                    <!-- Artigo 3: Queda da Selic inicia um novo ciclo na economia -->
+                    <a href="https://www.terra.com.br/noticias/queda-da-selic-inicia-um-novo-ciclo-na-economia,3405c90b3bb421738de333f4a574aef0q0i0zwlj.html" target="_blank" class="group block bg-gray-100 p-8 rounded-2xl flex flex-col justify-between animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
+                        <h3 class="text-xl font-bold mb-4 leading-snug text-brand-text-dark">Queda da Selic inicia um novo ciclo na economia</h3>
+                        <div class="mt-4">
+                            <span class="text-sm font-bold text-brand-accent group-hover:underline">Leia mais</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="py-24 md:py-32 bg-brand-dark">
+            <div class="max-w-original mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-light mb-16 animate-on-scroll">Entre em Contato</h2>
+                <div class="max-w-3xl mx-auto">
+                    <!-- CONTATO MOBILE/DESKTOP: layout específico -->
+                    <!-- No mobile (sem prefixo), usamos 2 colunas para os 3 itens, com o último (Localização) abrangendo 2 colunas. No desktop (md:), voltamos para 3 colunas iguais. -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 text-left mb-16">
+                        <!-- E-mail: Fica na Coluna 1 do mobile, Coluna 1 do desktop -->
+                        <div class="bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
+                            <i data-lucide="mail" class="w-6 h-6 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
+                            <h4 class="text-xs md:text-lg font-bold text-brand-light mb-1">E-mail</h4>
+                            <p class="text-[10px] md:text-sm text-brand-muted truncate">contato@rtsc.com.br</p>
+                        </div>
+                        <!-- Telefone: Fica na Coluna 2 do mobile, Coluna 2 do desktop -->
+                        <div class="bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                            <i data-lucide="phone" class="w-6 h-6 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
+                            <h4 class="text-xs md:text-lg font-bold text-brand-light mb-1">Telefone</h4>
+                            <p class="text-[10px] md:text-sm text-brand-muted">+55 (11) 3578-8007</p>
+                        </div>
+                        <!-- Localização: Ocupa 2 colunas no mobile (span-2), e volta a ser 1 coluna no desktop (md:col-span-1) -->
+                        <div class="col-span-2 md:col-span-1 bg-white/5 backdrop-blur-sm p-4 md:p-6 rounded-xl md:rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
+                            <!-- Ícone maior no mobile para dar mais destaque -->
+                            <i data-lucide="map-pin" class="w-8 h-8 md:w-8 md:h-8 text-brand-accent mb-2 md:mb-3"></i>
+                            <h4 class="text-sm md:text-lg font-bold text-brand-light mb-1">Localização</h4>
+                            <!-- Texto maior para Localização no mobile, e não truncado -->
+                            <p class="text-xs md:text-sm text-brand-muted">Rua Estados Unidos, 406, Jardins, São Paulo, SP, Brasil, 01427-000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="relative z-20 bg-brand-dark text-brand-light py-10">
+        <div class="max-w-original mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
+            <div class="flex-shrink-0">
+                <!-- Logo no Rodapé (Adicionado loading="lazy" para performance) -->
+                <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1693434942/$bkb704gpvtg" alt="Logo RTSC" class="w-[94px]">
+            </div>
+            <div class="text-center md:text-right">
+                <p class="text-xs text-brand-muted">&copy;2023 Grupo RTSC</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
