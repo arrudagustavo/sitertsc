@@ -147,7 +147,8 @@
 
         /* Estilos para o seletor de idioma */
         .lang-button {
-            @apply px-3 py-2 rounded-lg text-brand-light font-medium hover:text-brand-accent transition-colors flex items-center gap-1;
+            /* Ajustado para ser mais compacto no mobile */
+            @apply px-2 py-1 text-sm md:px-3 md:py-2 md:text-base rounded-lg text-brand-light font-medium hover:text-brand-accent transition-colors flex items-center gap-1;
         }
     </style>
 </head>
@@ -209,7 +210,8 @@
                 'lang_pt': 'Português',
                 'lang_en': 'Inglês',
                 'lang_es': 'Espanhol',
-                'lang_zh': 'Mandarim'
+                'lang_zh': 'Mandarim',
+                'lang_selector_title': 'Selecione o Idioma'
             },
             'en': {
                 'menu_who_we_are': 'Who We Are',
@@ -263,7 +265,8 @@
                 'lang_pt': 'Portuguese',
                 'lang_en': 'English',
                 'lang_es': 'Spanish',
-                'lang_zh': 'Mandarin'
+                'lang_zh': 'Mandarin',
+                'lang_selector_title': 'Select Language'
             },
             'es': {
                 'menu_who_we_are': 'Quiénes Somos',
@@ -315,9 +318,10 @@
                 'contact_address': 'Rua Estados Unidos, 406, Jardins, São Paulo, SP, Brasil, 01427-000',
                 'footer_copy': '&copy;2023 Grupo RTSC',
                 'lang_pt': 'Portugués',
-                'lang_en': 'Inglés',
+                'lang_en': 'Inglês',
                 'lang_es': 'Español',
-                'lang_zh': 'Mandarín'
+                'lang_zh': 'Mandarim',
+                'lang_selector_title': 'Seleccionar Idioma'
             },
             'zh': {
                 'menu_who_we_are': '关于我们',
@@ -371,7 +375,8 @@
                 'lang_pt': '葡萄牙语',
                 'lang_en': '英语',
                 'lang_es': '西班牙语',
-                'lang_zh': '普通话'
+                'lang_zh': '普通话',
+                'lang_selector_title': '选择语言'
             }
         };
 
@@ -407,12 +412,12 @@
             // Atualizar o idioma na tag HTML
             document.documentElement.lang = lang;
 
-            // Atualizar a label do seletor de idioma
+            // Atualizar a label do seletor de idioma no desktop (se existir)
             const currentLangLabel = document.getElementById('current-lang-label');
             if (currentLangLabel) {
                 currentLangLabel.textContent = langLabels[lang];
             }
-
+            
             // Atualizar o Mapa do Google Maps (Localização)
             const mapFrame = document.querySelector('.map-container iframe');
             if (mapFrame) {
@@ -455,7 +460,7 @@
             const userPrefLang = localStorage.getItem('rtsc_lang') || 'pt'; // Default para Português
             setLanguage(userPrefLang);
 
-            // Adiciona listeners para o seletor de idioma
+            // Adiciona listeners para o seletor de idioma (agora usado no desktop e na nova seção mobile)
             document.querySelectorAll('.lang-select-button').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const lang = e.currentTarget.getAttribute('data-lang');
@@ -610,52 +615,55 @@
         });
     </script>
 
-    <!-- Menu Mobile (Off-Canvas) REMOVIDO -->
-
     <!-- Hero Section com Vídeo de Fundo -->
     <section class="h-screen flex items-center justify-center sticky top-0">
         <header class="absolute top-0 w-full z-40 transition-all duration-300 ease-in-out">
-            <!-- Melhoria mobile: py-2 e flex-wrap -->
+            <!-- Container do Header -->
             <div class="max-w-original mx-auto px-4 py-2 flex justify-between items-center gap-x-3 gap-y-2 md:py-4 md:gap-x-6">
+                
+                <!-- Logo -->
                 <a href="#" class="flex-shrink-0 w-auto h-auto max-w-[94px]">
                     <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1693434942/$bkb704gpvtg" alt="Logo RTSC" class="w-full h-auto" style="filter: brightness(0) invert(1);">
                 </a>
                 
-                <!-- Contêiner para Navegação e Seletor de Idioma -->
-                <div class="flex items-center space-x-4">
-                    <!-- Navegação que é exibida em todas as telas (Ajustado para text-xs e space-x-2 no mobile) -->
-                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base">
+                <!-- Navegação e Seletor de Idioma (Alinhados à direita) -->
+                <!-- No mobile, usamos flex-wrap para permitir quebra de linha -->
+                <div class="flex flex-wrap items-center justify-end space-x-2 md:space-x-4">
+                    <!-- Navegação Principal (Visível em todas as telas, mais compacta no mobile) -->
+                    <!-- Adicionado flex-shrink-0 para garantir que não comprima o menu de idioma -->
+                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base flex-shrink-0">
                         <!-- Adicionado data-i18n para tradução -->
                         <a href="#quemsomos" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_who_we_are">Quem somos</a>
                         <a href="#areaatuacao" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_area">Área de atuação</a>
                         <a href="#midia" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_media">Na Mídia</a>
                         <a href="#contato" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_contact">Contato</a>
+                    
+                        <!-- Seletor de Idioma (Agora visível em TODAS as telas e segue a navegação) -->
+                        <details class="relative flex" id="lang-details">
+                            <summary class="lang-button cursor-pointer list-none" title="Seletor de Idioma">
+                                <!-- Ícone do planeta e label de idioma atual -->
+                                <i data-lucide="globe" class="w-4 h-4 text-brand-accent"></i>
+                                <span id="current-lang-label" class="text-sm font-bold">PT</span>
+                            </summary>
+    
+                            <!-- Menu Dropdown de Idiomas -->
+                            <!-- Ajustado para w-36 para ser mais compacto no mobile -->
+                            <div class="absolute right-0 top-full mt-2 w-36 bg-brand-dark border border-brand-accent/50 rounded-lg shadow-xl z-50 overflow-hidden transform origin-top-right animate-fade-in">
+                                <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-xs md:text-sm" data-lang="pt">
+                                    <span data-i18n="lang_pt">Português</span> (PT)
+                                </button>
+                                <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-xs md:text-sm" data-lang="en">
+                                    <span data-i18n="lang_en">Inglês</span> (EN)
+                                </button>
+                                <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-xs md:text-sm" data-lang="es">
+                                    <span data-i18n="lang_es">Espanhol</span> (ES)
+                                </button>
+                                <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-xs md:text-sm" data-lang="zh">
+                                    <span data-i18n="lang_zh">Mandarim</span> (ZH)
+                                </button>
+                            </div>
+                        </details>
                     </nav>
-
-                    <!-- Seletor de Idioma (Dropdown Moderno) -->
-                    <details class="relative" id="lang-details">
-                        <summary class="lang-button cursor-pointer list-none !px-2 md:!px-3" title="Seletor de Idioma">
-                            <!-- Ícone do planeta e label de idioma atual -->
-                            <i data-lucide="globe" class="w-4 h-4 md:w-5 md:h-5 text-brand-accent"></i>
-                            <span id="current-lang-label" class="text-sm font-bold">PT</span>
-                        </summary>
-
-                        <!-- Menu Dropdown de Idiomas -->
-                        <div class="absolute right-0 mt-2 w-40 bg-brand-dark border border-brand-accent/50 rounded-lg shadow-xl z-50 overflow-hidden transform origin-top-right animate-fade-in">
-                            <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-sm" data-lang="pt">
-                                <span data-i18n="lang_pt">Português</span> (PT)
-                            </button>
-                            <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-sm" data-lang="en">
-                                <span data-i18n="lang_en">Inglês</span> (EN)
-                            </button>
-                            <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-sm" data-lang="es">
-                                <span data-i18n="lang_es">Espanhol</span> (ES)
-                            </button>
-                            <button class="lang-select-button w-full text-left py-2 px-4 hover:bg-brand-accent/20 transition-colors text-sm" data-lang="zh">
-                                <span data-i18n="lang_zh">Mandarim</span> (ZH)
-                            </button>
-                        </div>
-                    </details>
                 </div>
             </div>
         </header>
@@ -1041,6 +1049,10 @@
                 </div>
             </div>
         </section>
+        
+        <!-- SEÇÃO: Seletor de Idioma Mobile (REMOVIDA) -->
+
+
     </main>
     <footer class="relative z-20 bg-brand-dark text-brand-light py-10">
         <div class="max-w-original mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
