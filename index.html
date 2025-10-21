@@ -41,7 +41,7 @@
                         },
                         'marquee': {
                             'from': { transform: 'translateX(0)' },
-                            // CORRIGIDO: Para loop infinito, move 50% (o tamanho do conteúdo duplicado)
+                            // CRÍTICO: Move 50% para simular o loop infinito do conteúdo duplicado
                             'to': { transform: 'translateX(-50%)' }, 
                         }
                     },
@@ -83,29 +83,25 @@
         .marquee-wrapper {
             display: flex;
             /* CRÍTICO PARA O LOOP: O wrapper deve ser largo o suficiente para caber o conteúdo original + a cópia */
-            width: 200%; /* Define a largura para 200% para suportar a duplicação */
+            width: fit-content; /* MODIFICADO: De volta a fit-content, a animação vai para -50% */
             will-change: transform; /* Otimização de performance para a animação */
-            /* A animação 'marquee' é aplicada via classe utilitária do Tailwind no HTML */
+            animation: marquee 30s linear infinite; /* Garante que a animação está aplicada */
         }
         .marquee-content {
             display: flex;
             flex-shrink: 0;
-            padding: 1rem 0;
-            width: 50%; /* Faz com que cada bloco de conteúdo ocupe metade (50%) do wrapper (200%) */
-            justify-content: space-around;
+            /* Removemos o width: 50% daqui, pois a largura é definida pelo fit-content e o flex-shrink-0 */
+            padding: 1rem 0; /* Padding vertical mantido */
+            /* Garante que a largura de todo o bloco original seja considerada. */
         }
-        /* REMOVIDO: a classe .marquee-item para tirar o efeito card e sombra */
-        /* .marquee-item {
-            background-color: #ffffff; 
-            padding: 0.5rem 1.5rem;
-            border-radius: 0.5rem;
+        /* NOVO ESTILO: Garante que o item ocupe o espaço necessário e use o padding para espaçamento */
+        .marquee-item {
             flex-shrink: 0;
-            width: auto; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-        } */
-
-
-        /* Estilo do Carrossel 3D */
+            /* Garante que o item tenha a cor de fundo da faixa (branco) */
+            background-color: white; 
+        }
+        
+        /* Estilos do Carrossel 3D */
         .carousel-card {
             transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease;
         }
@@ -379,46 +375,45 @@
             </div>
         </section>
         
-        <!-- CORRIGIDO: Reduzido padding vertical e mantido bg-white para a faixa de ponta a ponta -->
+        <!-- CARROSSEL CORRIGIDO PARA USAR A ESTRUTURA FUNCIONAL E A IDENTIDADE VISUAL ATUAL -->
         <section class="py-8 md:py-16 bg-white">
             <!-- Carrossel de números que se move em loop -->
             <div class="marquee-container">
                 <div class="marquee-wrapper animate-marquee">
                     <!-- Conteúdo Principal -->
                     <div class="marquee-content px-4 md:px-8">
-                        <!-- Removido 'marquee-item' e ajustado o tamanho da fonte (text-6xl) -->
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                            <!-- Aumentando a fonte do número -->
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+10 <span class="text-brand-accent">bi</span></h4>
-                            <!-- Aumentando a fonte do descritivo -->
-                            <p class="text-base md:text-xl text-gray-600 mt-1">em ativos sob custódia</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+10 <span class="text-brand-accent">bi</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">em ativos sob custódia</p>
                         </div>
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+1.000</h4>
-                            <p class="text-base md:text-xl text-gray-600 mt-1">colaboradores</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+1.000</h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">colaboradores</p>
                         </div>
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                            <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+500 <span class="text-brand-accent">mil</span></h4>
-                            <p class="text-base md:text-xl text-gray-600 mt-1">investidores</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">investidores</p>
                         </div>
                     </div>
                     <!-- Conteúdo Repetido (para o loop infinito) -->
                     <div class="marquee-content px-4 md:px-8" aria-hidden="true">
-                        <!-- Removido 'marquee-item' e ajustado o tamanho da fonte (text-6xl) -->
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                             <!-- Aumentando a fonte do número -->
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+10 <span class="text-brand-accent">bi</span></h4>
-                            <p class="text-base md:text-xl text-gray-600 mt-1">em ativos sob custódia</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+10 <span class="text-brand-accent">bi</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">em ativos sob custódia</p>
                         </div>
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+1.000</h4>
-                            <p class="text-base md:text-xl text-gray-600 mt-1">colaboradores</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+1.000</h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">colaboradores</p>
                         </div>
-                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
-                             <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-4xl md:text-6xl font-display font-bold">+500 <span class="text-brand-accent">mil</span></h4>
-                            <p class="text-base md:text-xl text-gray-600 mt-1">investidores</p>
+                        <div class="marquee-item text-center px-4 md:px-8">
+                            <!-- Tamanho de fonte maior e texto escuro -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold text-brand-text-dark whitespace-nowrap">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-2 whitespace-nowrap">investidores</p>
                         </div>
                     </div>
                 </div>
@@ -435,14 +430,6 @@
                     <p class="text-lg text-brand-muted mb-4">Um hub de inovação, com vocação para acelerar negócios arrojados e transformadores.</p>
                     <p class="text-lg text-brand-muted">Uma gestora de novos negócios, com foco na transparência e na segurança.</p>
                 </div>
-            </div>
-        </section>
-
-        <section id="grupo" class="py-24 md:py-32">
-            <!-- A cor do fundo desta seção será a nova brand-dark: #282828 -->
-            <div class="max-w-original mx-auto px-4 text-center">
-                <!-- Imagem do grupo (Adicionado loading="lazy" para performance) -->
-                <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1755024654/$12dzbxovlfv" alt="Logos das Empresas do Grupo" class="max-w-[528px] w-full h-auto mx-auto animate-on-scroll">
             </div>
         </section>
         
