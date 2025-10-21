@@ -304,7 +304,7 @@
                 'card_gi_text': 'Vehículos que conectan el sector inmobiliario con inversores de todos los tamaños, incluyendo miles de personas físicas que ayudan a financiar el sector a través de fondos inmobiliarios.',
                 'card_sg_title': 'Securitización y Garantías Inmobiliarias',
                 'card_sg_text': 'Empresas que conectan a emprendedores con fuentes de financiación inmobiliaria alternativas, permitiendo que los proyectos se conviertan en realidad.',
-                'card_si_title': 'Servicios Inmobiliarios y Financieros',
+                'card_si_title': 'Servicios Imobiliarios y Financieros',
                 'card_si_text': 'Nuestra actuación es amplia. El portafolio de empresas invertidas incluye muchos otros segmentos ligados al universo inmobiliario y turístico.',
                 'media_title': 'NUESTRA PRESENCIA EN LOS MEDIOS',
                 'media_article_1': 'B3 registra un aumento expresivo de inversores por CPF',
@@ -374,7 +374,7 @@
                 'footer_copy': '&copy;2023 RTSC 集团',
                 'lang_pt': '葡萄牙语',
                 'lang_en': '英语',
-                'lang_es': '西班牙语',
+                'lang_es': 'Español',
                 'lang_zh': '普通话',
                 'lang_selector_title': '选择语言'
             }
@@ -627,11 +627,11 @@
                 </a>
                 
                 <!-- Navegação e Seletor de Idioma (Alinhados à direita) -->
-                <!-- No mobile, usamos flex-wrap para permitir quebra de linha -->
+                <!-- Usei o justify-end no contêiner pai para garantir que a logo fique à esquerda e o menu à direita, e items-center para centralização vertical -->
                 <div class="flex flex-wrap items-center justify-end space-x-2 md:space-x-4">
                     <!-- Navegação Principal (Visível em todas as telas, mais compacta no mobile) -->
                     <!-- Adicionado flex-shrink-0 para garantir que não comprima o menu de idioma -->
-                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base flex-shrink-0">
+                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base flex-shrink-0 items-center">
                         <!-- Adicionado data-i18n para tradução -->
                         <a href="#quemsomos" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_who_we_are">Quem somos</a>
                         <a href="#areaatuacao" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_area">Área de atuação</a>
