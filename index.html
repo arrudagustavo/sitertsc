@@ -20,7 +20,7 @@
             theme: {
                 extend: {
                     colors: {
-                        'brand-dark': '#0a0a0a',      // Preto/Fundo Escuro Principal
+                        'brand-dark': '#282828',      // Cinza Escuro Suave (Fundo Principal)
                         'brand-light': '#e5e5e5',     // Cinza Claro/Branco (Texto Principal)
                         'brand-muted': '#a3a3a3',     // Cinza (Texto Secundário)
                         'brand-accent': '#D4AF37',    // DOURADO ELEGANTE (Acento)
@@ -41,7 +41,8 @@
                         },
                         'marquee': {
                             'from': { transform: 'translateX(0)' },
-                            'to': { transform: 'translateX(-50%)' },
+                            // CORRIGIDO: Para loop infinito, move 50% (o tamanho do conteúdo duplicado)
+                            'to': { transform: 'translateX(-50%)' }, 
                         }
                     },
                     animation: {
@@ -81,18 +82,28 @@
         }
         .marquee-wrapper {
             display: flex;
-            width: fit-content;
+            /* CRÍTICO PARA O LOOP: O wrapper deve ser largo o suficiente para caber o conteúdo original + a cópia */
+            width: 200%; /* Define a largura para 200% para suportar a duplicação */
             will-change: transform; /* Otimização de performance para a animação */
+            /* A animação 'marquee' é aplicada via classe utilitária do Tailwind no HTML */
         }
         .marquee-content {
             display: flex;
             flex-shrink: 0;
             padding: 1rem 0;
+            width: 50%; /* Faz com que cada bloco de conteúdo ocupe metade (50%) do wrapper (200%) */
+            justify-content: space-around;
         }
-        .marquee-item {
-            width: auto; 
+        /* REMOVIDO: a classe .marquee-item para tirar o efeito card e sombra */
+        /* .marquee-item {
+            background-color: #ffffff; 
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
             flex-shrink: 0;
-        }
+            width: auto; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        } */
+
 
         /* Estilo do Carrossel 3D */
         .carousel-card {
@@ -368,42 +379,46 @@
             </div>
         </section>
         
-        <section class="py-12 md:py-32">
-            <!-- Carrossel de números que se move em loop (Ajuste de fonte para Mobile: text-7xl -> text-5xl) -->
+        <!-- CORRIGIDO: Reduzido padding vertical e mantido bg-white para a faixa de ponta a ponta -->
+        <section class="py-8 md:py-16 bg-white">
+            <!-- Carrossel de números que se move em loop -->
             <div class="marquee-container">
                 <div class="marquee-wrapper animate-marquee">
                     <!-- Conteúdo Principal -->
                     <div class="marquee-content px-4 md:px-8">
-                        <div class="marquee-item text-center px-4 md:px-8">
-                            <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
+                        <!-- Removido 'marquee-item' e ajustado o tamanho da fonte (text-6xl) -->
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
+                            <!-- Aumentando a fonte do número -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+10 <span class="text-brand-accent">bi</span></h4>
+                            <!-- Aumentando a fonte do descritivo -->
+                            <p class="text-base md:text-xl text-gray-600 mt-1">em ativos sob custódia</p>
                         </div>
-                        <div class="marquee-item text-center px-4 md:px-8">
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+1.000</h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+1.000</h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-1">colaboradores</p>
                         </div>
-                        <div class="marquee-item text-center px-4 md:px-8">
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
                             <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-1">investidores</p>
                         </div>
                     </div>
                     <!-- Conteúdo Repetido (para o loop infinito) -->
                     <div class="marquee-content px-4 md:px-8" aria-hidden="true">
-                        <div class="marquee-item text-center px-4 md:px-8">
-                             <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+10 <span class="text-brand-accent">bi</span></h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">em ativos sob custódia</p>
+                        <!-- Removido 'marquee-item' e ajustado o tamanho da fonte (text-6xl) -->
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
+                             <!-- Aumentando a fonte do número -->
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+10 <span class="text-brand-accent">bi</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-1">em ativos sob custódia</p>
                         </div>
-                        <div class="marquee-item text-center px-4 md:px-8">
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+1.000</h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">colaboradores</p>
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+1.000</h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-1">colaboradores</p>
                         </div>
-                        <div class="marquee-item text-center px-4 md:px-8">
+                        <div class="text-center flex-shrink-0 w-auto px-4 text-brand-text-dark">
                              <!-- O ACENTO NOS NÚMEROS FOI PARA DOURADO -->
-                            <h4 class="text-5xl md:text-7xl font-display font-bold text-brand-light">+500 <span class="text-brand-accent">mil</span></h4>
-                            <p class="text-base md:text-xl text-brand-muted mt-2">investidores</p>
+                            <h4 class="text-4xl md:text-6xl font-display font-bold">+500 <span class="text-brand-accent">mil</span></h4>
+                            <p class="text-base md:text-xl text-gray-600 mt-1">investidores</p>
                         </div>
                     </div>
                 </div>
@@ -411,6 +426,7 @@
         </section>
 
         <section class="py-24 md:py-32">
+            <!-- A cor do fundo desta seção será a nova brand-dark: #282828 -->
             <div class="max-w-original mx-auto px-4 text-center">
                 <div class="max-w-3xl mx-auto animate-on-scroll">
                     <h2 class="text-3xl md:text-4xl font-display uppercase font-bold text-brand-light mb-6">Sobre a RTSC</h2>
@@ -423,44 +439,49 @@
         </section>
 
         <section id="grupo" class="py-24 md:py-32">
+            <!-- A cor do fundo desta seção será a nova brand-dark: #282828 -->
             <div class="max-w-original mx-auto px-4 text-center">
                 <!-- Imagem do grupo (Adicionado loading="lazy" para performance) -->
                 <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1755024654/$12dzbxovlfv" alt="Logos das Empresas do Grupo" class="max-w-[528px] w-full h-auto mx-auto animate-on-scroll">
             </div>
         </section>
         
-        <section id="sobre" class="relative py-24 md:py-32 bg-white text-brand-text-dark">
+        <!-- CORRIGIDO: Fundo da seção para brand-dark para harmonizar -->
+        <section id="sobre" class="relative py-24 md:py-32 bg-brand-dark text-brand-light">
             <div class="max-w-original mx-auto px-4">
-                 <h3 class="text-3xl font-display uppercase font-bold text-center text-brand-text-dark mb-16 animate-on-scroll">Visão, Missão e Valores</h3>
+                 <h3 class="text-3xl font-display uppercase font-bold text-center text-brand-light mb-16 animate-on-scroll">Visão, Missão e Valores</h3>
                  
                  <!-- CARROSSEL MOBILE: Visão, Missão e Valores (Visível no mobile, oculto no desktop) -->
                  <div class="md:hidden mobile-scroll-container">
                     <div class="mobile-card-wrapper px-4">
-                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <!-- CARD ESCURO / TEXTO CLARO -->
                         <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
-                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                            <!-- Fundo sutilmente diferente (white/5) para diferenciar do fundo da seção -->
+                            <div class="bg-white/5 p-6 rounded-2xl h-full flex flex-col justify-start">
                                 <!-- ÍCONE DOURADO -->
                                 <i data-lucide="target" class="w-10 h-10 text-brand-accent mb-4"></i>
-                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
-                                <p class="text-sm text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-light mb-3">Missão</h4>
+                                <p class="text-sm text-brand-muted">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
                             </div>
                         </div>
-                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <!-- CARD ESCURO / TEXTO CLARO -->
                         <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
-                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                            <!-- Fundo sutilmente diferente (white/5) para diferenciar do fundo da seção -->
+                            <div class="bg-white/5 p-6 rounded-2xl h-full flex flex-col justify-start">
                                  <!-- ÍCONE DOURADO -->
                                 <i data-lucide="rocket" class="w-10 h-10 text-brand-accent mb-4"></i>
-                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
-                                <p class="text-sm text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-light mb-3">Visão</h4>
+                                <p class="text-sm text-brand-muted">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
                             </div>
                         </div>
-                        <!-- REMOVIDA: a classe 'animate-on-scroll' e o 'transition-delay' para o mobile -->
+                        <!-- CARD ESCURO / TEXTO CLARO -->
                         <div class="mobile-card transition-transform duration-300 hover:scale-[1.02]">
-                            <div class="bg-gray-100 p-6 rounded-2xl h-full flex flex-col justify-start">
+                            <!-- Fundo sutilmente diferente (white/5) para diferenciar do fundo da seção -->
+                            <div class="bg-white/5 p-6 rounded-2xl h-full flex flex-col justify-start">
                                  <!-- ÍCONE DOURADO -->
                                 <i data-lucide="shield-check" class="w-10 h-10 text-brand-accent mb-4"></i>
-                                <h4 class="text-xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
-                                <p class="text-sm text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
+                                <h4 class="text-xl font-display uppercase font-bold text-brand-light mb-3">Valores</h4>
+                                <p class="text-sm text-brand-muted">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
                             </div>
                         </div>
                     </div>
@@ -468,23 +489,26 @@
                  
                  <!-- GRID DESKTOP: Visão, Missão e Valores (Oculto no mobile, visível no desktop) -->
                  <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
+                    <!-- CARD ESCURO / TEXTO CLARO -->
+                    <div class="bg-white/5 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105">
                         <!-- ÍCONE DOURADO -->
                         <i data-lucide="target" class="w-12 h-12 text-brand-accent mb-4"></i>
-                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Missão</h4>
-                        <p class="text-base text-gray-600">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-light mb-3">Missão</h4>
+                        <p class="text-base text-brand-muted">Impulsionar o capital humano e organizacional para alavancar o desenvolvimento de negócios inovadores e, assim, fortalecer nossa sociedade.</p>
                     </div>
-                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
+                    <!-- CARD ESCURO / TEXTO CLARO -->
+                    <div class="bg-white/5 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 200ms;">
                         <!-- ÍCONE DOURADO -->
                         <i data-lucide="rocket" class="w-12 h-12 text-brand-accent mb-4"></i>
-                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Visão</h4>
-                        <p class="text-base text-gray-600">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-light mb-3">Visão</h4>
+                        <p class="text-base text-brand-muted">Ousar na estruturação de novos negócios no setor de turismo, atentos ao desenvolvimento sustentável e à democratização do acesso ao lazer.</p>
                     </div>
-                    <div class="bg-gray-100 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
+                    <!-- CARD ESCURO / TEXTO CLARO -->
+                    <div class="bg-white/5 p-8 rounded-2xl animate-on-scroll transition-transform duration-300 hover:scale-105" style="transition-delay: 400ms;">
                          <!-- ÍCONE DOURADO -->
                         <i data-lucide="shield-check" class="w-12 h-12 text-brand-accent mb-4"></i>
-                        <h4 class="text-2xl font-display uppercase font-bold text-brand-text-dark mb-3">Valores</h4>
-                        <p class="text-base text-gray-600">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
+                        <h4 class="text-2xl font-display uppercase font-bold text-brand-light mb-3">Valores</h4>
+                        <p class="text-base text-brand-muted">Ética, Governança rigorosa, Ousadia para criar e Protagonismo em projetos socialmente responsáveis e ambientais.</p>
                     </div>
                 </div>
             </div>
