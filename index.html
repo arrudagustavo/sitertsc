@@ -308,7 +308,7 @@
                 'vmg_values_title': 'Valores',
                 'vmg_values_text': 'Ética, Gobierno riguroso, audacia para crear y protagonismo en proyectos socialmente responsables y ambientales.',
                 'area_title': 'CONSTRUYENDO UN NUEVO MERCADO',
-                'area_p1': 'Invertimos en empresas de segmentos variados y complementarios, buscando promover el desarrollo del turismo brasileño para todos.',
+                'area_p1': 'Invertimos en empresas de segmentos variados y complementares, buscando promover el desarrollo del turismo brasileño para todos.',
                 'area_p2': 'Las compañías de nuestro portafolio operan en todos los extremos del mercado, conectando personas, empresas y sociedad.',
                 'card_pe_title': 'Private Equity',
                 'card_pe_text': 'Estructuras que invierten en diversos emprendimientos, desde proyectos en construcción hasta operaciones consolidadas con foco en la industria hoteleira, como hoteles, resorts y parques.',
@@ -631,19 +631,22 @@
     <section class="h-screen flex items-center justify-center sticky top-0">
         <header class="absolute top-0 w-full z-40 transition-all duration-300 ease-in-out">
             <!-- Container do Header -->
-            <div class="max-w-original mx-auto px-4 py-2 flex justify-between items-center gap-x-3 gap-y-2 md:py-4 md:gap-x-6">
+            <!-- Alterado: flex-wrap para permitir a quebra do Logo e Navegação. md:flex-row para garantir o desktop original. -->
+            <div class="max-w-original mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 md:py-4 md:gap-x-6 md:flex-nowrap">
                 
-                <!-- Logo -->
-                <a href="#" class="flex-shrink-0 w-auto h-auto max-w-[94px]">
-                    <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1693434942/$bkb704gpvtg" alt="Logo RTSC" class="w-full h-auto" style="filter: brightness(0) invert(1);">
-                </a>
+                <!-- Logo: Agora ocupa a linha inteira no mobile e é centralizado. No desktop volta a ser flex-shrink-0 e alinhado à esquerda. -->
+                <div class="w-full flex justify-center md:w-auto md:justify-start flex-shrink-0">
+                    <a href="#" class="w-auto h-auto max-w-[94px]">
+                        <img loading="lazy" src="https://d335luupugsy2.cloudfront.net/cms/files/691549/1693434942/$bkb704gpvtg" alt="Logo RTSC" class="w-full h-auto" style="filter: brightness(0) invert(1);">
+                    </a>
+                </div>
                 
-                <!-- Navegação e Seletor de Idioma (Alinhados à direita) -->
-                <!-- Usei o justify-end no contêiner pai para garantir que a logo fique à esquerda e o menu à direita, e items-center para centralização vertical -->
-                <div class="flex flex-wrap items-center justify-end space-x-2 md:space-x-4">
+                <!-- Navegação e Seletor de Idioma (Alinhados à direita no desktop, Centralizados na linha de baixo no mobile) -->
+                <!-- Alterado: No mobile (padrão), w-full flex justify-center para centralizar a navegação. No desktop (md:), w-auto flex-nowrap justify-end para voltar ao original. -->
+                <div class="w-full flex flex-wrap items-center justify-center space-x-2 md:w-auto md:justify-end md:space-x-4 md:flex-nowrap">
                     <!-- Navegação Principal (Visível em todas as telas, mais compacta no mobile) -->
                     <!-- Adicionado flex-shrink-0 para garantir que não comprima o menu de idioma -->
-                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base flex-shrink-0 items-center">
+                    <nav class="flex flex-wrap space-x-2 md:space-x-8 text-xs md:text-base flex-shrink-0 items-center justify-center">
                         <!-- Adicionado data-i18n para tradução -->
                         <a href="#quemsomos" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_who_we_are">Quem somos</a>
                         <a href="#areaatuacao" class="text-brand-light font-medium hover:text-brand-accent transition-colors" data-i18n="menu_area">Área de atuação</a>
